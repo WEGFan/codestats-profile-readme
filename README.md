@@ -11,6 +11,11 @@
     <a href="https://github.com/WEGFan/codestats-profile-readme/issues">Request Feature</a>
 </p>
 
+---
+
+> Note that Github's server aborts the request if it reaches the 4-second timeout. So maybe the images won't show because my server is waiting for response from Code::Stats, try refreshing and see if it shows.
+> To prevent heavy load from Code::Stats server, all images with same parameters will be cached for 30 minutes before updating data.
+
 ## Features <!-- omit in toc -->
 
 - [Code::Stats History Graph](#codestats-history-graph)
@@ -59,20 +64,19 @@ See [color string](#color-string) below for supported color representations.
 
 ### More customization
 
-| query parameter | type                                | description                                                                                | default value                                                                          |
-| --------------- | ----------------------------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
-| history_days    | integer                             | how many days to show in the graph, maximum 30                                             | 14                                                                                     |
-| max_languages   | integer                             | how many languages to show before grouping into "Others", maximum 15                       | 8                                                                                      |
-| timezone        | [timezone string](#timezone-string) | what timezone to use to calculate day ranges                                               | 00:00                                                                                  |
-| width           | integer                             | the width of image (in pixels)                                                             | 900                                                                                    |
-| height          | integer                             | the height of image (in pixels)                                                            | 450                                                                                    |
-| show_legend     | boolean                             | whether to show graph legend on the right                                                  | true                                                                                   |
-| bg_color        | [color string](#color-string)       | the color of the image's background                                                        | ffffff                                                                                 |
-| grid_color      | [color string](#color-string)       | the color of the grid                                                                      | e8e8e8                                                                                 |
-| text_color      | [color string](#color-string)       | the color of the text                                                                      | 666666                                                                                 |
-| zeroline_color  | [color string](#color-string)       | the color of the zero-line                                                                 | ababab                                                                                 |
-| language_colors | [color string](#color-string) list  | the colors of each langauge and "Others" (loops if length is less than `max_languages`)    | \["3e4053","f15854","5da5da", "faa43a","60bd68","f17cb0", "b2912f","decf3f","b276b2"\] |
-| cache_seconds   | integer                             | how many seconds before stats refresh, minimum 1800 (30 mins) and maximum 43200 (12 hours) | 1800                                                                                   |
+| query parameter | type                                | description                                                                             | default value                                                                          |
+| --------------- | ----------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| history_days    | integer                             | how many days to show in the graph, maximum 30                                          | 14                                                                                     |
+| max_languages   | integer                             | how many languages to show before grouping into "Others", maximum 15                    | 8                                                                                      |
+| timezone        | [timezone string](#timezone-string) | what timezone to use to calculate day ranges                                            | 00:00                                                                                  |
+| width           | integer                             | the width of image (in pixels)                                                          | 900                                                                                    |
+| height          | integer                             | the height of image (in pixels)                                                         | 450                                                                                    |
+| show_legend     | boolean                             | whether to show graph legend on the right                                               | true                                                                                   |
+| bg_color        | [color string](#color-string)       | the color of the image's background                                                     | ffffff                                                                                 |
+| grid_color      | [color string](#color-string)       | the color of the grid                                                                   | e8e8e8                                                                                 |
+| text_color      | [color string](#color-string)       | the color of the text                                                                   | 666666                                                                                 |
+| zeroline_color  | [color string](#color-string)       | the color of the zero-line                                                              | ababab                                                                                 |
+| language_colors | [color string](#color-string) list  | the colors of each langauge and "Others" (loops if length is less than `max_languages`) | \["3e4053","f15854","5da5da", "faa43a","60bd68","f17cb0", "b2912f","decf3f","b276b2"\] |
 
 **Special types:**
 
@@ -116,3 +120,24 @@ Prerequisites:
 1. Clone the project: `git clone https://github.com/WEGFan/codestats-profile-readme && cd codestats-profile-readme`
 2. Install requirements: `pip install -r requirements.txt`
 3. Run: `gunicorn -c gunicorn_config.py run:app`, and you should be able to access it by `http://127.0.0.1:2012` on your server
+4. **(Recommended)** Set cache for at least 30 minutes in your reverse proxy server to prevent heavy load from Code::Stats server. Example in nginx:
+
+```nginx
+http {
+  proxy_cache_path /www/server/nginx/proxy_cache_dir levels=1:2 keys_zone=cache_one:20m inactive=1d max_size=1g;
+  proxy_cache cache_one;
+  ...
+
+  server {
+    ...
+
+    location / {
+      proxy_pass http://127.0.0.1:2012;
+      proxy_cache cache_one;
+      proxy_cache_valid any 30m;
+      proxy_cache_key $uri$is_args$args;
+      proxy_ignore_headers Cache-Control Set-Cookie;
+    }
+  }
+}
+```
