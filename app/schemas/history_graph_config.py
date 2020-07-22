@@ -21,7 +21,6 @@ class GraphConfigSchema(Schema):
     grid_color = ColorString()
     text_color = ColorString()
     zeroline_color = ColorString()
-    cache_seconds = fields.Integer(validate=validate.Range(min=30 * 60, max=12 * 60 * 60))
 
     @pre_load
     def parse_list(self, data, **kwargs):

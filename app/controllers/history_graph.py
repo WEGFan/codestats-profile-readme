@@ -207,5 +207,5 @@ def get_history_graph(username: str):
 
     svg = graph.to_image('svg', engine='kaleido', width=config.width, height=config.height, scale=1)
     return Response(svg, mimetype='image/svg+xml', headers={
-        'Cache-Control': f'max-age={config.cache_seconds}'
+        'Cache-Control': 'max-age=0'
     })
