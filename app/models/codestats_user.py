@@ -16,6 +16,8 @@ class User(object):
         response = requests.get(f'https://codestats.net/api/users/{self.username}')
         if response.status_code == requests.codes.not_found:
             return False
+        # username in profile-graph api is case sensitive so set the username to the correct one
+        self.username = response.json()['user']
         return True
 
     def get_day_language_xp_list(self, since: arrow.Arrow):
