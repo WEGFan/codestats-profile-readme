@@ -9,8 +9,6 @@ from werkzeug.exceptions import HTTPException
 from app import controllers
 from . import config
 
-__version__ = '1.0.0'
-
 from app.controllers.home import home
 from app.controllers.history_graph import history_graph
 
