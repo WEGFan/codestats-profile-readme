@@ -2,7 +2,7 @@
 import json
 from json.decoder import JSONDecodeError
 
-from marshmallow import fields, post_load, Schema, validate, ValidationError
+from marshmallow import Schema, ValidationError, fields, post_load, validate
 from marshmallow.decorators import pre_load
 
 from app.fields import ColorString, TimezoneString

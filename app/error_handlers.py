@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import current_app, render_template, Response
+from flask import Response, current_app, render_template
 from marshmallow import ValidationError
 from werkzeug.exceptions import HTTPException
 

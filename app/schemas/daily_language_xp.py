@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from marshmallow import fields, post_load, Schema
+from marshmallow import Schema, fields, post_load
 
 from app.models.daily_language_xp import DailyLanguageXp
 

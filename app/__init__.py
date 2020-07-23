@@ -4,17 +4,15 @@ import logging.handlers
 from pathlib import Path
 
 from flask import Flask
+from marshmallow.exceptions import ValidationError
 from werkzeug.exceptions import HTTPException
 
-from app import controllers
-from . import config
-
-from app.controllers.home import home
 from app.controllers.history_graph import history_graph
-
+from app.controllers.home import home
+from app.error_handlers import http_exception, internal_server_error, user_not_found, validation_error
 from app.exceptions import UserNotFoundException
-from app.error_handlers import internal_server_error, validation_error, user_not_found, http_exception
-from marshmallow.exceptions import ValidationError
+
+from . import config
 
 
 def create_app(config_object=config.Config):

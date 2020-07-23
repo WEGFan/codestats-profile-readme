@@ -3,7 +3,7 @@ import re
 
 import arrow
 from _plotly_utils.basevalidators import ColorValidator
-from marshmallow import fields, ValidationError
+from marshmallow import ValidationError, fields
 
 
 class ColorString(fields.String):
