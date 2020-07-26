@@ -33,8 +33,6 @@ def get_graph(day_language_xp_list: List[DailyLanguageXp], config: GraphConfig):
 
     language_xp_dict = {}
 
-    no_data = True if not day_language_xp_list else False
-
     # accumulate xp per day for every language
     for obj in day_language_xp_list:
         try:
@@ -47,6 +45,9 @@ def get_graph(day_language_xp_list: List[DailyLanguageXp], config: GraphConfig):
     # sort by the sum of xp
     language_xp_list = list(language_xp_dict.items())
     language_xp_list.sort(key=lambda k_v: sum(k_v[1]), reverse=True)
+
+    # not using day_language_xp_list because it may contains data not in date range
+    no_data = True if not language_xp_list else False
 
     # if language number exceeds max_languages, group them into others
     if len(language_xp_list) > config.max_languages:
