@@ -8,7 +8,6 @@ import plotly.graph_objects as go
 from flask import Blueprint, current_app, request, Response
 from marshmallow import EXCLUDE, ValidationError
 
-from app.exceptions import UserNotFoundException
 from app.models.codestats_user import User
 from app.models.daily_language_xp import DailyLanguageXp
 from app.models.history_graph_config import GraphConfig
@@ -194,14 +193,13 @@ def get_history_graph(username: str):
         config: GraphConfig = GraphConfigSchema(unknown=EXCLUDE).load(args)
     except ValidationError as err:
         raise err
-    user = User(username)
 
-    if not user.exists():
-        raise UserNotFoundException()
+    user = User(username)
+    user.set_real_username()
 
     today = arrow.utcnow().to(config.timezone)
-    first_day = today.shift(days=-config.history_days + 1)
-
+    # get history for 30 days directly to cache data
+    first_day = today.shift(days=-30 + 1)
     day_language_xp_list = user.get_day_language_xp_list(first_day)
 
     graph = get_graph(day_language_xp_list, config)

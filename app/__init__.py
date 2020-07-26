@@ -7,12 +7,12 @@ from flask import Flask
 from marshmallow.exceptions import ValidationError
 from werkzeug.exceptions import HTTPException
 
+from app import config
+from app.cache import cache
 from app.controllers.history_graph import history_graph
 from app.controllers.home import home
 from app.error_handlers import http_exception, internal_server_error, user_not_found, validation_error
 from app.exceptions import UserNotFoundException
-
-from . import config
 
 
 def create_app(config_object=config.Config):
@@ -37,5 +37,7 @@ def create_app(config_object=config.Config):
         app.register_error_handler(ValidationError, validation_error)
         app.register_error_handler(HTTPException, http_exception)
         app.register_error_handler(Exception, internal_server_error)
+
+        cache.init_app(app)
 
         return app

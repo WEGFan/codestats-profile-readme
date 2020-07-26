@@ -1,7 +1,8 @@
 requests~=2.24.0
 arrow~=0.15.7
 Flask~=1.1.2
-kaleido==0.0.1
+Flask-Caching~=1.9.0
+kaleido~=0.0.1
 marshmallow~=3.7.0
 plotly~=4.9.0
 gunicorn~=20.0.4; platform_system != 'Windows'
