@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
 from pathlib import Path
 
 
@@ -10,4 +11,4 @@ class Config(object):
     LOG_PATH: str = str(Path(PROJECT_PATH, 'data', 'logs').resolve())
     LOG_FILENAME: str = 'app.log'
     LOG_FORMAT: str = '[%(asctime)s] %(levelname)s - [%(module)s] [%(filename)s:%(lineno)s]: %(message)s'
-    LOG_LEVEL: int = logging.INFO
+    LOG_LEVEL: int = logging.DEBUG if os.getenv('FLASK_DEBUG') == '1' else logging.INFO
