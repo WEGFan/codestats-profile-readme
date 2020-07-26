@@ -3,7 +3,8 @@ import re
 
 import arrow
 from _plotly_utils.basevalidators import ColorValidator
-from marshmallow import ValidationError, fields
+from dateutil.tz import tzoffset
+from marshmallow import fields, ValidationError
 
 
 class ColorString(fields.String):
@@ -23,7 +24,11 @@ class TimezoneString(fields.String):
         super()._deserialize(value, attr, data, **kwargs)
         try:
             value = value.strip()
-            arrow.parser.TzinfoParser.parse(value)
+            parsed = arrow.parser.TzinfoParser.parse(value)
+            if isinstance(parsed, tzoffset):
+                offset = parsed.utcoffset(None).total_seconds()
+                if not -12 <= offset / 60 / 60 <= 12:
+                    raise ValidationError(f'Invalid timezone string: {value}, must between -12:00 and +12:00')
             return value
         except arrow.ParserError as err:
             raise ValidationError(f'Invalid timezone string: {value}') from err
