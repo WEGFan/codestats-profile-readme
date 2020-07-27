@@ -16,3 +16,6 @@ class Config(object):
     CACHE_TYPE = 'filesystem'
     CACHE_DIR = str(Path(PROJECT_PATH, 'data', 'cache').resolve())
     CACHE_THRESHOLD = 500
+
+    SVGO_PATH = 'svgo'
+    SVGO_CONFIG_PATH = str(Path(APP_PATH, 'svgo.yml').resolve())

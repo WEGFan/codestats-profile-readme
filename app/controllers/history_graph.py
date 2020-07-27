@@ -12,6 +12,7 @@ from app.models.codestats_user import User
 from app.models.daily_language_xp import DailyLanguageXp
 from app.models.history_graph_config import GraphConfig
 from app.schemas.history_graph_config import GraphConfigSchema
+from app.utils.svgo import try_optimize_svg
 
 history_graph = Blueprint('history_graph', __name__, url_prefix='/history-graph')
 
@@ -205,6 +206,8 @@ def get_history_graph(username: str):
     graph = get_graph(day_language_xp_list, config)
 
     svg = graph.to_image('svg', engine='kaleido', width=config.width, height=config.height, scale=1)
-    return Response(svg, mimetype='image/svg+xml', headers={
+    optimized_svg = try_optimize_svg(svg.decode('utf-8'))
+
+    return Response(optimized_svg, mimetype='image/svg+xml', headers={
         'Cache-Control': 'max-age=0'
     })
