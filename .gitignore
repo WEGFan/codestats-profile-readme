@@ -1,4 +1,5 @@
 data/
+config/custom_config_local.py
 
 .vscode/
 .idea/

@@ -5,6 +5,8 @@ from flask import current_app
 
 
 def try_optimize_svg(original: str) -> str:
+    if not current_app.config['SVG_OPTIMIZE_ENABLE']:
+        return original
     args = [
         current_app.config['SVGO_PATH'],
         '--input', '-',

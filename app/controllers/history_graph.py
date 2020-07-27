@@ -206,8 +206,9 @@ def get_history_graph(username: str):
     graph = get_graph(day_language_xp_list, config)
 
     svg = graph.to_image('svg', engine='kaleido', width=config.width, height=config.height, scale=1)
-    optimized_svg = try_optimize_svg(svg.decode('utf-8'))
+    if current_app.config['SVG_OPTIMIZE_ENABLE']:
+        svg = try_optimize_svg(svg.decode('utf-8'))
 
-    return Response(optimized_svg, mimetype='image/svg+xml', headers={
+    return Response(svg, mimetype='image/svg+xml', headers={
         'Cache-Control': 'max-age=0'
     })
