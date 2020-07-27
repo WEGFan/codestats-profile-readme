@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+import time
 from typing import List
 
 import arrow
 import requests
 from flask import current_app
 
-from app.cache import cache, get_key_with_prefix
+from app.cache import cache, get_key_with_prefix, set_redis_expire_seconds
 from app.exceptions import UserNotFoundException
 from app.models.daily_language_xp import DailyLanguageXp
 from app.schemas.daily_language_xp import DailyLanguageXpSchema
@@ -38,7 +39,17 @@ class User(object):
 
     def get_day_language_xp_list(self, since: arrow.Arrow) -> List[DailyLanguageXp]:
         cache_key = get_key_with_prefix(f"{self.username}_{since.strftime('%Y-%m-%d')}", 'day_language_xp')
+        lock_key = get_key_with_prefix(cache_key, 'lock')
+
         data = cache.get(cache_key)
+        # add lock to make sure only one request is fetching response from server (hopefully)
+        lock = cache.cache.inc(lock_key, delta=1)
+        set_redis_expire_seconds(lock_key, 15)
+        while data is None and isinstance(lock, int) and lock > 1:
+            time.sleep(1)
+            data = cache.get(cache_key)
+            lock = cache.get(lock_key)
+
         if data is None:
             post_data = '''{
                 profile(username: "%s") {
@@ -50,5 +61,7 @@ class User(object):
             data = response_json['data']['profile']['day_language_xps']
             cache.set(cache_key, data, timeout=30 * 60)
             current_app.logger.info('set cache [%s]', cache_key)
+        cache.delete(lock_key)
+
         self.day_language_xp_list = DailyLanguageXpSchema().load(data, many=True)
         return self.day_language_xp_list
