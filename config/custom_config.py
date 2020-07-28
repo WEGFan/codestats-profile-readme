@@ -16,9 +16,9 @@ LOG_PATH: str = r'./data/logs'
 # LOG_FILENAME: The log file's filename.
 LOG_FILENAME: str = 'app.log'
 
-# REDIS_URL: The URL to connect to a Redis server.
+# REDIS_URL: The URL to connect to a Redis server. e.g. redis://user:password@localhost:6379/0
 # If empty, a filesystem cache will be used under ./data/cache
-REDIS_URL: str = 'redis://localhost:6379/0'
+REDIS_URL: str = ''
 
 # SVG_OPTIMIZE_ENABLE: Whether or not to optimize SVGs with SVGO before response.
 # npm and SVGO is needed to be installed.
