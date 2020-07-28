@@ -14,7 +14,7 @@
 ---
 
 > Note that Github's server aborts the request if it reaches the 4-second timeout. So maybe the images won't show because my server is waiting for response from Code::Stats, try refreshing and see if it shows.  
-> To prevent heavy load from Code::Stats server, all images with same parameters will be cached for 30 minutes before updating data.
+> To prevent heavy load from Code::Stats server, all data from same user will be cached for 30 minutes before updating data.
 
 ## Features <!-- omit in toc -->
 
