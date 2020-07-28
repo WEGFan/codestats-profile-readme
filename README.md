@@ -116,28 +116,10 @@ You can also deploy this project on your own server by following the instruction
 Prerequisites:
 
 - [Python 3.6 64-bit](https://www.python.org/downloads/) or later. (64-bit is required because [kaleido](https://github.com/plotly/Kaleido) is currently not providing 32-bit pre-compiled wheels)
+- **(Optional)** [Redis](https://redis.io/download/) for caching. If not installed, the app will use a file system cache instead, which is not very performant thus it is highly recommended that you configure a Redis server.
+- **(Optional)** [SVGO](https://github.com/svg/svgo) for optimizing SVGs (also requires [Node.js](https://nodejs.org/en/download/))
 
 1. Clone the project: `git clone https://github.com/WEGFan/codestats-profile-readme && cd codestats-profile-readme`
 2. Install requirements: `pip install -r requirements.txt`
-3. Run: `gunicorn -c gunicorn_config.py run:app`, and you should be able to access it by `http://127.0.0.1:2012` on your server
-4. **(Recommended)** Set cache for at least 30 minutes in your reverse proxy server to prevent heavy load from Code::Stats server. Example in nginx:
-
-```nginx
-http {
-  proxy_cache_path /www/server/nginx/proxy_cache_dir levels=1:2 keys_zone=cache_one:20m inactive=1d max_size=1g;
-  proxy_cache cache_one;
-  ...
-
-  server {
-    ...
-
-    location / {
-      proxy_pass http://127.0.0.1:2012;
-      proxy_cache cache_one;
-      proxy_cache_valid any 30m;
-      proxy_cache_key $uri$is_args$args;
-      proxy_ignore_headers Cache-Control Set-Cookie;
-    }
-  }
-}
-```
+3. Edit your config in [config/custom_config.py](config/custom_config.py).
+4. Run: `gunicorn -c gunicorn_config.py run:app`, and you should be able to access it by `http://127.0.0.1:2012` on your server
