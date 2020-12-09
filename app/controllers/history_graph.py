@@ -16,6 +16,13 @@ from app.utils.svgo import try_optimize_svg
 
 history_graph = Blueprint('history_graph', __name__, url_prefix='/history-graph')
 
+ignore_list = ['Plain text',
+               'nerdtree',
+               'Markdown',
+               'Properties',
+               'XML',
+               'JSON']
+
 
 def calculate_best_range(y_max):
     exponent = math.floor(math.log10(y_max))
@@ -43,7 +50,7 @@ def get_graph(day_language_xp_list: List[DailyLanguageXp], config: GraphConfig):
         xp_per_day[pos] += obj.xp
 
     # sort by the sum of xp
-    language_xp_list = list(language_xp_dict.items())
+    language_xp_list = list(filter(lambda s: s[0] not in ignore_list, language_xp_dict.items()))
     language_xp_list.sort(key=lambda k_v: sum(k_v[1]), reverse=True)
 
     # not using day_language_xp_list because it may contains data not in date range
