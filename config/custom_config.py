@@ -29,3 +29,11 @@ SVGO_PATH: str = r'/usr/bin/svgo'
 
 # SVGO_CONFIG_PATH: Specifies the path to the config file of SVGO.
 SVGO_CONFIG_PATH: str = r'./config/svgo.yml'
+
+USERNAME: str = 'grigala'
+IGNORE_LIST: list = ['Plain text',
+                     'nerdtree',
+                     'Markdown',
+                     'Properties',
+                     'XML',
+                     'JSON']

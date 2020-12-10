@@ -13,15 +13,9 @@ from app.models.daily_language_xp import DailyLanguageXp
 from app.models.history_graph_config import GraphConfig
 from app.schemas.history_graph_config import GraphConfigSchema
 from app.utils.svgo import try_optimize_svg
+from config import custom_config
 
 history_graph = Blueprint('history_graph', __name__, url_prefix='/history-graph')
-
-ignore_list = ['Plain text',
-               'nerdtree',
-               'Markdown',
-               'Properties',
-               'XML',
-               'JSON']
 
 
 def calculate_best_range(y_max):
@@ -50,7 +44,7 @@ def get_graph(day_language_xp_list: List[DailyLanguageXp], config: GraphConfig):
         xp_per_day[pos] += obj.xp
 
     # sort by the sum of xp
-    language_xp_list = list(filter(lambda s: s[0] not in ignore_list, language_xp_dict.items()))
+    language_xp_list = list(filter(lambda s: s[0] not in custom_config.IGNORE_LIST, language_xp_dict.items()))
     language_xp_list.sort(key=lambda k_v: sum(k_v[1]), reverse=True)
 
     # not using day_language_xp_list because it may contains data not in date range
@@ -202,7 +196,11 @@ def get_history_graph(username: str):
     except ValidationError as err:
         raise err
 
-    user = User(username)
+    # restricting usage to my user only
+    if username != custom_config.USERNAME:
+        user = User(custom_config.USERNAME)
+    else:
+        user = User(username)
     user.set_real_username()
 
     today = arrow.utcnow().to(config.timezone)
